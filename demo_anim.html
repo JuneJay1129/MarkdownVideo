@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 1080px; height: 1920px;
+  font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  overflow: hidden;
+  background: #fafaf7;
+}
+
+/* ===== SLIDE CONTAINER (no CSS animations — JS driven) ===== */
+.slide {
+  position: absolute; top: 0; left: 0;
+  width: 1080px; height: 1920px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0; transform: translateY(60px) scale(0.96);
+  padding: 80px 60px;
+}
+
+/* Children start hidden (JS will drive them) */
+.animate-child {
+  opacity: 0; transform: translateY(30px);
+  will-change: opacity, transform;
+}
+
+/* ===== PAGE 1: COVER ===== */
+.cover { background: #fafaf7; text-align: center; }
+.cover .logo-container {
+  width: 160px; height: 160px; border-radius: 36px;
+  background: #fff; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,.08); margin-bottom: 40px;
+}
+.cover .logo-container .logo { font-size: 80px; }
+.cover h1 { font-size: 64px; font-weight: 700; color: #0a0a1a; margin-bottom: 20px; }
+.cover .intro { font-size: 32px; color: #666; line-height: 1.6; max-width: 700px; margin-bottom: 48px; }
+.cover .tag-line {
+  font-size: 40px; font-weight: 700;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 24px;
+}
+.cover .badges { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.cover .badge {
+  background: #fff; padding: 10px 24px; border-radius: 24px;
+  font-size: 22px; color: #667eea;
+  border: 1.5px solid #667eea40; font-weight: 500;
+}
+
+/* ===== PAGE 2: SUMMARY ===== */
+.summary { background: #fafaf7; }
+.summary .top-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 8px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+.summary .icon { font-size: 64px; margin-bottom: 24px; }
+.summary h2 { font-size: 48px; font-weight: 700; color: #0a0a1a; margin-bottom: 16px; }
+.summary .lead { font-size: 28px; color: #666; margin-bottom: 40px; }
+.summary .quote-block {
+  background: #fff; border-radius: 20px; padding: 40px 48px;
+  border: 2px solid #667eea20; width: 100%; margin-bottom: 40px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.summary .quote-block p { font-size: 26px; color: #333; line-height: 1.8; }
+.summary .quote-block .highlight {
+  background: linear-gradient(90deg, #667eea20, #764ba220);
+  padding: 2px 8px; border-radius: 6px; font-weight: 600; color: #667eea;
+}
+.summary .metrics {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%;
+}
+.summary .metric-card {
+  background: #fff; border-radius: 16px; padding: 28px 20px;
+  text-align: center; border: 2px solid #667eea15;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.summary .metric-value { font-size: 36px; font-weight: 700; color: #667eea; }
+.summary .metric-label { font-size: 20px; color: #888; margin-top: 8px; }
+
+/* ===== PAGE 3: FEATURES ===== */
+.features { background: #fafaf7; }
+.features .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #667eea, #764ba2); }
+.features .icon { font-size: 64px; margin-bottom: 24px; }
+.features h2 { font-size: 48px; font-weight: 700; color: #0a0a1a; margin-bottom: 16px; }
+.features .lead { font-size: 28px; color: #666; margin-bottom: 36px; }
+.features .card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; margin-bottom: 36px;
+}
+.features .card {
+  background: #fff; border-radius: 20px; padding: 36px;
+  border: 2px solid #667eea15; box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.features .card .card-icon { font-size: 40px; margin-bottom: 12px; }
+.features .card h3 { font-size: 28px; font-weight: 700; color: #0a0a1a; margin-bottom: 10px; }
+.features .card p { font-size: 22px; color: #555; line-height: 1.6; }
+.features .summary-text { font-size: 26px; color: #444; line-height: 1.7; width: 100%; margin-bottom: 28px; }
+.features .summary-text .project-name { font-weight: 700; color: #0a0a1a; font-size: 30px; }
+.features .stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; width: 100%;
+}
+.features .stat {
+  background: #fff; border-radius: 14px; padding: 22px 16px;
+  text-align: center; border: 2px solid #667eea10;
+  box-shadow: 0 2px 8px rgba(0,0,0,.03);
+}
+.features .stat .value { font-size: 32px; font-weight: 700; color: #667eea; }
+.features .stat .label { font-size: 18px; color: #888; margin-top: 6px; }
+
+/* ===== PAGE 4: ARCHITECTURE ===== */
+.architecture { background: #fafaf7; }
+.architecture .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #667eea, #764ba2); }
+.architecture .icon { font-size: 64px; margin-bottom: 24px; }
+.architecture h2 { font-size: 48px; font-weight: 700; color: #0a0a1a; margin-bottom: 16px; }
+.architecture .lead { font-size: 28px; color: #666; margin-bottom: 36px; }
+.architecture .layers {
+  display: flex; flex-direction: column; gap: 20px; width: 100%;
+}
+.architecture .layer {
+  display: flex; align-items: flex-start; gap: 20px;
+  background: #fff; border-radius: 18px; padding: 28px 32px;
+  border: 2px solid #667eea10; box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.architecture .layer .layer-icon { font-size: 36px; flex-shrink: 0; }
+.architecture .layer h3 { font-size: 26px; font-weight: 700; color: #0a0a1a; margin-bottom: 8px; }
+.architecture .layer p { font-size: 22px; color: #555; line-height: 1.6; }
+.architecture .layer .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.architecture .layer .tag {
+  background: #667eea10; color: #667eea; padding: 4px 14px;
+  border-radius: 8px; font-size: 18px; font-weight: 500;
+}
+.architecture .divider {
+  width: 4px; height: 24px; background: #667eea30; border-radius: 2px;
+  margin: 0 auto; flex-shrink: 0;
+}
+
+/* ===== PAGE 5: USAGE ===== */
+.usage { background: #fafaf7; text-align: center; }
+.usage .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 8px; background: linear-gradient(90deg, #667eea, #764ba2); }
+.usage .icon { font-size: 64px; margin-bottom: 24px; }
+.usage h2 { font-size: 48px; font-weight: 700; color: #0a0a1a; margin-bottom: 16px; }
+.usage .lead { font-size: 28px; color: #666; margin-bottom: 40px; }
+.usage .steps {
+  display: flex; flex-direction: column; gap: 20px; width: 100%; margin-bottom: 40px;
+  text-align: left;
+}
+.usage .step {
+  display: flex; align-items: flex-start; gap: 18px;
+  background: #fff; border-radius: 18px; padding: 28px 32px;
+  border: 2px solid #667eea10; box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+.usage .step .step-num {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700; flex-shrink: 0;
+}
+.usage .step .step-text h3 { font-size: 26px; font-weight: 700; color: #0a0a1a; margin-bottom: 6px; }
+.usage .step .step-text p { font-size: 22px; color: #555; line-height: 1.5; }
+.usage .github-stats {
+  display: flex; gap: 24px; justify-content: center;
+}
+.usage .github-stat {
+  background: #fff; border-radius: 16px; padding: 24px 36px;
+  border: 2px solid #667eea15; box-shadow: 0 2px 12px rgba(0,0,0,.04);
+  text-align: center;
+}
+.usage .github-stat .gh-value { font-size: 36px; font-weight: 700; color: #667eea; }
+.usage .github-stat .gh-label { font-size: 20px; color: #888; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<!-- ===== PAGE 1: COVER ===== -->
+<div class="slide cover" data-slide="0">
+  <div class="animate-child" data-delay="0.3">
+    <div class="logo-container"><span class="logo">🦞</span></div>
+  </div>
+  <div class="animate-child" data-delay="0.6">
+    <h1>🚀 每天认识一个AI工具</h1>
+  </div>
+  <div class="animate-child" data-delay="0.9">
+    <p class="intro">一个轻量级、开源的 AI Agent 开发框架，帮助开发者快速构建智能体应用。</p>
+  </div>
+  <div class="animate-child" data-delay="1.2">
+    <p class="tag-line">「让 AI Agent 开发像搭积木一样简单」</p>
+  </div>
+  <div class="animate-child" data-delay="1.5">
+    <div class="badges">
+      <span class="badge">TypeScript</span>
+      <span class="badge">Framework</span>
+      <span class="badge">Open Source</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: SUMMARY ===== -->
+<div class="slide summary" data-slide="1">
+  <div class="top-bar"></div>
+  <div class="animate-child" data-delay="0.3">
+    <div class="icon">🦞</div>
+  </div>
+  <div class="animate-child" data-delay="0.5">
+    <h2>CopilotKit</h2>
+  </div>
+  <div class="animate-child" data-delay="0.7">
+    <p class="lead">构建深度集成的 AI 助手和 Agent</p>
+  </div>
+  <div class="animate-child" data-delay="1.0">
+    <div class="quote-block">
+      <p>CopilotKit 通过 <span class="highlight">useCopilotAction</span> 和 <span class="highlight">useCopilotReadable</span> 两个核心 API，让 React 应用原生集成 AI 能力。Agent 可以直接操作前端 UI 状态，实现真正的「人机协同」。</p>
+    </div>
+  </div>
+  <div class="animate-child" data-delay="1.5">
+    <div class="metrics">
+      <div class="metric-card"><div class="metric-value">35K+</div><div class="metric-label">GitHub Stars</div></div>
+      <div class="metric-card"><div class="metric-value">500+</div><div class="metric-label">Contributors</div></div>
+      <div class="metric-card"><div class="metric-value">1M+</div><div class="metric-label">Downloads</div></div>
+      <div class="metric-card"><div class="metric-value">60+</div><div class="metric-label">Integrations</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: FEATURES ===== -->
+<div class="slide features" data-slide="2">
+  <div class="top-bar"></div>
+  <div class="animate-child" data-delay="0.3">
+    <div class="icon">⚡</div>
+  </div>
+  <div class="animate-child" data-delay="0.5">
+    <h2>核心功能</h2>
+  </div>
+  <div class="animate-child" data-delay="0.7">
+    <p class="lead">三大支柱：Readable · Action · Chat</p>
+  </div>
+  <div class="animate-child" data-delay="1.0">
+    <div class="card-grid">
+      <div class="card"><div class="card-icon">📖</div><h3>useCopilotReadable</h3><p>实时暴露应用状态给 AI，让 Agent「看懂」你的前端。</p></div>
+      <div class="card"><div class="card-icon">⚡</div><h3>useCopilotAction</h3><p>注册自定义函数，AI Agent 可直接调用前端方法执行操作。</p></div>
+      <div class="card"><div class="card-icon">💬</div><h3>CopilotChat</h3><p>可嵌入的 AI 聊天组件，支持上下文感知和流式响应。</p></div>
+      <div class="card"><div class="card-icon">🔗</div><h3>CoAgent</h3><p>基于 LangGraph 的 Agent 协作框架，支持多 Agent 协同。</p></div>
+    </div>
+  </div>
+  <div class="animate-child" data-delay="1.5">
+    <p class="summary-text"><span class="project-name">CopilotKit</span> 让你的应用「理解」用户意图，并「主动」执行操作。从简单的文本补全到复杂的多步骤工作流，都可以通过声明式 API 实现。</p>
+  </div>
+  <div class="animate-child" data-delay="2.0">
+    <div class="stats">
+      <div class="stat"><div class="value">4</div><div class="label">核心 Hooks</div></div>
+      <div class="stat"><div class="value">15+</div><div class="label">内置组件</div></div>
+      <div class="stat"><div class="value">99%</div><div class="label">TypeScript</div></div>
+      <div class="stat"><div class="value">MIT</div><div class="label">开源协议</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: ARCHITECTURE ===== -->
+<div class="slide architecture" data-slide="3">
+  <div class="top-bar"></div>
+  <div class="animate-child" data-delay="0.3">
+    <div class="icon">🏗️</div>
+  </div>
+  <div class="animate-child" data-delay="0.5">
+    <h2>架构设计</h2>
+  </div>
+  <div class="animate-child" data-delay="0.7">
+    <p class="lead">三层解耦 · 声明式 · 可扩展</p>
+  </div>
+  <div class="animate-child" data-delay="1.0">
+    <div class="layers">
+      <div class="layer"><div class="layer-icon">🎨</div><div><h3>UI Layer</h3><p>React 组件、CopilotChat、Sidebar、Popup 等开箱即用的 UI。</p><div class="tags"><span class="tag">CopilotChat</span><span class="tag">CopilotSidebar</span><span class="tag">CopilotPopup</span></div></div></div>
+      <div class="divider"></div>
+      <div class="layer"><div class="layer-icon">⚙️</div><div><h3>Logic Layer</h3><p>Hooks 驱动状态管理，Action 注册，Context 绑定。</p><div class="tags"><span class="tag">useCopilotAction</span><span class="tag">useCopilotReadable</span><span class="tag">useCopilotChat</span></div></div></div>
+      <div class="divider"></div>
+      <div class="layer"><div class="layer-icon">🧠</div><div><h3>Agent Layer</h3><p>LangGraph Agent 运行时，支持多 Agent 协作、状态共享、人机协同。</p><div class="tags"><span class="tag">CoAgent</span><span class="tag">LangGraph</span><span class="tag">State</span></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: USAGE ===== -->
+<div class="slide usage" data-slide="4">
+  <div class="top-bar"></div>
+  <div class="animate-child" data-delay="0.3">
+    <div class="icon">📦</div>
+  </div>
+  <div class="animate-child" data-delay="0.5">
+    <h2>快速开始</h2>
+  </div>
+  <div class="animate-child" data-delay="0.7">
+    <p class="lead">3 分钟接入 AI 能力</p>
+  </div>
+  <div class="animate-child" data-delay="1.0">
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><h3>安装</h3><p>npm install @copilotkit/react-core @copilotkit/react-ui</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><h3>配置 Provider</h3><p>包裹 CopilotKitProvider，设置 runtimeUrl</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><h3>添加 Hooks</h3><p>useCopilotReadable + useCopilotAction = 智能体就绪</p></div></div>
+    </div>
+  </div>
+  <div class="animate-child" data-delay="1.5">
+    <div class="github-stats">
+      <div class="github-stat"><div class="gh-value">⭐ 35K+</div><div class="gh-label">Stars</div></div>
+      <div class="github-stat"><div class="gh-value">🍴 4.2K</div><div class="gh-label">Forks</div></div>
+      <div class="github-stat"><div class="gh-value">📈 活跃</div><div class="gh-label">Status</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== JS-DRIVEN ANIMATION ENGINE =====
+// timecut captures at exact frame intervals — JS performance.now() is frozen
+// between captures, so animation state is always perfectly in sync with frames.
+
+const SLIDE_IN  = 800;    // 0.8s slide entrance (quick)
+const SLIDE_OUT = 1000;   // 1.0s slide exit
+const CHILD_IN  = 500;    // 0.5s child entrance
+const HOLD_AFTER_CHILDREN = 2000; // hold after TTS finishes
+const CHILD_STAGGER = 400; // 0.4s between children
+
+// TTS-driven timing (injected by pipeline)
+const TTS_TIMING = [{"enterStart": 0, "childrenStart": 800, "exitStart": 17550, "exitEnd": 18550}, {"enterStart": 18550, "childrenStart": 19350, "exitStart": 42320, "exitEnd": 43320}, {"enterStart": 43320, "childrenStart": 44120, "exitStart": 75220, "exitEnd": 76220}, {"enterStart": 76220, "childrenStart": 77020, "exitStart": 100520, "exitEnd": 101520}, {"enterStart": 101520, "childrenStart": 102320, "exitStart": 119770, "exitEnd": 120770}]; // Set to array of {enterStart, childrenStart, exitStart, exitEnd} or null for auto
+
+const slides = document.querySelectorAll('.slide');
+
+// Calculate per-slide timing
+const slideTimings = [];
+const slideCount = slides.length;
+
+if (TTS_TIMING) {
+  // Use pre-calculated TTS timing
+  TTS_TIMING.forEach((t, i) => {
+    const slide = slides[i];
+    const children = slide.querySelectorAll('.animate-child');
+    const childDelays = [];
+    children.forEach((child) => {
+      childDelays.push(parseFloat(child.dataset.delay || '0.3') * 1000);
+    });
+    slideTimings.push({
+      el: slide, children, childDelays,
+      enterStart: t.enterStart,
+      childrenStart: t.childrenStart,
+      exitStart: t.exitStart,
+      exitEnd: t.exitEnd,
+    });
+  });
+  var currentTime = TTS_TIMING[TTS_TIMING.length - 1].exitEnd;
+} else {
+  // Auto-calculate from constants
+  let ct = 0;
+  for (let i = 0; i < slideCount; i++) {
+    const slide = slides[i];
+    const children = slide.querySelectorAll('.animate-child');
+    const childDelays = [];
+    children.forEach((child) => {
+      childDelays.push(parseFloat(child.dataset.delay || '0.3') * 1000);
+    });
+    const lastChildDelay = Math.max(...childDelays);
+    const totalVisible = SLIDE_IN + lastChildDelay + CHILD_IN + HOLD_AFTER_CHILDREN;
+    slideTimings.push({
+      el: slide, children, childDelays,
+      enterStart: ct,
+      childrenStart: ct + SLIDE_IN,
+      exitStart: ct + totalVisible,
+      exitEnd: ct + totalVisible + SLIDE_OUT,
+    });
+    ct += totalVisible + SLIDE_OUT;
+  }
+  var currentTime = ct;
+}
+
+console.log('Total animation duration:', (currentTime / 1000).toFixed(1) + 's');
+console.log('Slide timings:', slideTimings.map((t, i) =>
+  `Slide ${i}: enter ${t.enterStart}ms, children ${t.childrenStart}ms, exit ${t.exitStart}ms`
+));
+
+// Easing function (ease-out cubic)
+function easeOut(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
+function easeInOut(t) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+// Clamp value to [0, 1]
+function clamp01(v) { return Math.max(0, Math.min(1, v)); }
+
+function animate() {
+  const now = performance.now();
+
+  slideTimings.forEach((st) => {
+    // Slide entrance progress
+    let slideOpacity = 0;
+    let slideTranslateY = 60;
+    let slideScale = 0.96;
+
+    if (now >= st.enterStart && now < st.exitEnd) {
+      if (now < st.enterStart + SLIDE_IN) {
+        // Entering
+        const t = easeOut(clamp01((now - st.enterStart) / SLIDE_IN));
+        slideOpacity = t;
+        slideTranslateY = 60 * (1 - t);
+        slideScale = 0.96 + 0.04 * t;
+      } else if (now < st.exitStart) {
+        // Fully visible
+        slideOpacity = 1;
+        slideTranslateY = 0;
+        slideScale = 1;
+      } else if (now < st.exitEnd) {
+        // Exiting
+        const t = easeInOut(clamp01((now - st.exitStart) / SLIDE_OUT));
+        slideOpacity = 1 - t;
+        slideTranslateY = -60 * t;
+        slideScale = 1 - 0.04 * t;
+      }
+    } else if (now >= st.exitEnd) {
+      slideOpacity = 0;
+      slideTranslateY = -60;
+      slideScale = 0.96;
+    }
+
+    st.el.style.opacity = slideOpacity;
+    st.el.style.transform = `translateY(${slideTranslateY}px) scale(${slideScale})`;
+
+    // Child animations
+    st.children.forEach((child, j) => {
+      const childStart = st.childrenStart + st.childDelays[j];
+      const childEnd = childStart + CHILD_IN;
+
+      let childOpacity = 0;
+      let childTranslateY = 30;
+
+      if (now >= childStart && now < childEnd) {
+        const t = easeOut(clamp01((now - childStart) / CHILD_IN));
+        childOpacity = t;
+        childTranslateY = 30 * (1 - t);
+      } else if (now >= childEnd && now < st.exitStart) {
+        childOpacity = 1;
+        childTranslateY = 0;
+      } else if (now >= st.exitStart) {
+        // Fade out with slide
+        const t = easeInOut(clamp01((now - st.exitStart) / SLIDE_OUT));
+        childOpacity = 1 - t;
+        childTranslateY = -20 * t;
+      }
+
+      child.style.opacity = childOpacity;
+      child.style.transform = `translateY(${childTranslateY}px)`;
+    });
+  });
+
+  if (now < currentTime + 2000) {
+    requestAnimationFrame(animate);
+  }
+}
+
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>
